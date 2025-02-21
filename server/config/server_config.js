@@ -1,6 +1,10 @@
 require("dotenv").config();
 const express = require("express");
 
+const { Model } = require("objection");
+const knex = require("./db");
+Model.knex(knex);
+
 const userRoutes = require("../routes/users/user");
 const groupRoutes = require("../routes/groups/group");
 const taskRoutes = require("../routes/tasks/task");

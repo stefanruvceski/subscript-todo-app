@@ -1,4 +1,4 @@
-const User = required("../../models/users/user");
+const User = require("../../models/users/user");
 
 class UserRepository {
   async create(userData) {

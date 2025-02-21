@@ -1,4 +1,4 @@
-const TaskHistory = require("../../models/task_history/task_histiry");
+const TaskHistory = require("../../models/task_history/task_history");
 
 class TaskHistoryRepository {
   async create(historyData) {
