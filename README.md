@@ -67,3 +67,22 @@ Bonus features include a simple frontend boostrapped with create-react-app and t
     > Note: The proxied connection will only work locally.
     > You'll need the server to serve the frontend build if
     > you want to host the entire project somewhere.
+
+
+
+
+
+
+## Thinking
+
+- Tasks -> creator, desc, status,  title, group_id, assign_id, last_update_by,
+- Users -> register/login (jwt) -> create groups and Tasks -> adding users to groups
+- Groups -> name created
+- group-members -> group_id user_id
+- task-history -> old_content, new_content, changed_by, 
+
+- comments -> content, user_id,task_id, parent_comment_id
+
+
+
+
