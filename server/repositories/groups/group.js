@@ -1,4 +1,4 @@
-const Group = require('../models/groups/group');
+const Group = require('../../models/groups/group');
 
 class GroupRepository {
   async create(groupData) {

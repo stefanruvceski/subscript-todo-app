@@ -1,4 +1,4 @@
-const GroupMember = require("../models/group_members/group_member");
+const GroupMember = require("../../models/group_members/group_member");
 
 class GroupMemberRepository {
   async create(memberData) {
