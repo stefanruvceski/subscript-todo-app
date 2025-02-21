@@ -14,7 +14,7 @@ app.use(function(req, res, next) {
 });
 
 
-const port = process.env.PORT || 5000;
+
 
 app.get('/', routes.getAllTodos);
 app.get('/:id', routes.getTodo);
