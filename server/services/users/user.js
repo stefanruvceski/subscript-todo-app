@@ -1,5 +1,6 @@
 const userRepository = require("../../repositories/users/user");
 const bcrypt = require("bcrypt");
+
 class UserService {
   async createUser({ username, email, password }) {
     const existingUser = await userRepository.findByEmail(email);
@@ -14,23 +15,29 @@ class UserService {
   }
 
   async getUserById(id) {
-    return userRepository.findById(id);
+    const user = await userRepository.findById(id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    return user;
   }
 
   async getUserByEmail(email) {
-    return userRepository.findByEmail(email);
+    const user = await userRepository.findByEmail(email);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    return user;
   }
 
-  async updateUser(id, userData) {
-    if (userData.password) {
-      userData.password = await bcrypt.hash(userData.password, 10);
+  async updateUser(id, updateData) {
+    if (updateData.password) {
+      updateData.password = await bcrypt.hash(updateData.password, 10);
     }
-    const updatedUser = await userRepository.update(id, userData);
-
+    const updatedUser = await userRepository.update(id, updateData);
     if (!updatedUser) {
       throw new Error("User not found");
     }
-
     return updatedUser;
   }
 
@@ -39,7 +46,6 @@ class UserService {
     if (!deletedUser) {
       throw new Error("User not found");
     }
-
     return deletedUser;
   }
 }

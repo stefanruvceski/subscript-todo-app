@@ -6,7 +6,6 @@ class GroupService {
     const groupData = { name, creator_id };
     const newGroup = await groupRepository.create(groupData);
 
-    // Automatski dodaj kreatora kao člana grupe
     await groupMemberRepository.create({
       group_id: newGroup.id,
       user_id: creator_id,

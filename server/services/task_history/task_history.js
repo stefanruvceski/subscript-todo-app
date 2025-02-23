@@ -1,41 +1,26 @@
 const taskHistoryRepository = require("../../repositories/task_history/task_history");
+const taskRepository = require("../../repositories/tasks/task");
 
 class TaskHistoryService {
-  async createTaskHistory({ task_id, changed_by, old_values, new_values }) {
-    const historyData = { task_id, changed_by, old_values, new_values };
-    return taskHistoryRepository.create(historyData);
-  }
+  async getTaskHistory(taskId) {
+    const task = await taskRepository.findById(taskId);
+    if (!task) {
+      throw new Error("Task not found");
+    }
 
-  async getTaskHistoryById(id) {
-    const history = await taskHistoryRepository.findById(id);
-    if (!history) {
-      throw new Error("Task history not found");
+    const history = await taskHistoryRepository.findByTaskId(taskId);
+    if (!history.length) {
+      throw new Error("No history found for this task");
     }
     return history;
   }
 
-  async getTaskHistoryByTaskId(taskId) {
-    return taskHistoryRepository.findByTaskId(taskId);
-  }
-
-  async getAllTaskHistories() {
-    return taskHistoryRepository.findAll();
-  }
-
-  async updateTaskHistory(id, historyData) {
-    const updatedHistory = await taskHistoryRepository.update(id, historyData);
-    if (!updatedHistory) {
-      throw new Error("Task history not found");
+  async getHistoryByChangerId(changerId) {
+    const history = await taskHistoryRepository.findByChangerId(changerId);
+    if (!history.length) {
+      throw new Error("No history found for this user");
     }
-    return updatedHistory;
-  }
-
-  async deleteTaskHistory(id) {
-    const deletedCount = await taskRepository.delete(id);
-    if (!deletedCount) {
-      throw new Error("Task history not found");
-    }
-    return deletedCount;
+    return history;
   }
 }
 
