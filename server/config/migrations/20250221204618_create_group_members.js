@@ -14,12 +14,12 @@ exports.up = function (knex) {
       .inTable("users")
       .onDelete("CASCADE")
       .notNullable();
-    table.timestamp("joined_at").defaultsTo(knex.fn.now());
+    table.timestamp("joined_at").defaultTo(knex.fn.now());
     table.primary(["group_id", "user_id"]);
     table.index("user_id");
   });
 };
 
 exports.down = function (knex) {
-  return knex.schema.dropTable("group_members"); // Drops the table on rollback
+  return knex.schema.dropTable("group_members");
 };
