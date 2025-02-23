@@ -3,7 +3,6 @@ const groupService = require("../../services/groups/group");
 class GroupController {
   async createGroup(req, res) {
     try {
-      console.log(req.user.id)
       const group = await groupService.createGroup(req.body, req.user.id);
       res.status(201).json(group);
     } catch (error) {

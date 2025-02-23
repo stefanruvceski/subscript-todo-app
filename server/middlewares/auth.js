@@ -11,6 +11,10 @@ async function authMiddleware(req, res, next) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
 
+    if (Date.now() >= decoded.exp * 1000) {
+      return res.status(401).json({ error: "Token expired" });
+    }
+
     await knex.raw(`SET app.current_user_id = ${req.user.id}`);
     next();
   } catch (error) {
