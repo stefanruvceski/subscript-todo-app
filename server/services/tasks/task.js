@@ -3,14 +3,10 @@ const groupMemberRepository = require("../../repositories/group_members/group_me
 const userRepository = require("../../repositories/users/user");
 
 class TaskService {
-  async createTask({
-    title,
-    description,
-    creator_id,
-    assignee_id,
-    group_id,
-    status = 0,
-  }) {
+  async createTask(
+    { title, description, assignee_id, group_id, status = 0 },
+    creator_id
+  ) {
     const creator = await userRepository.findById(creator_id);
     if (!creator) {
       throw new Error("Creator not found");

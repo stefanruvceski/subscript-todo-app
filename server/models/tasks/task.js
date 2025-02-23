@@ -31,7 +31,7 @@ class Task extends Model {
   static get relationMappings() {
     const User = require("../users/user");
     const Group = require("../groups/group");
-    const TaskHistory = require("./Task_history");
+    const TaskHistory = require("../task_history/Task_history");
     return {
       creator: {
         relation: Model.BelongsToOneRelation,
