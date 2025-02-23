@@ -369,6 +369,70 @@
       ]
     },
     {
+      "name": "comments",
+      "item": [
+        {
+          "name": "create comment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJzdGVmYW4iLCJpYXQiOjE3NDAzMTQ0ODYsImV4cCI6MTc0MDMxODA4Nn0.7NewSnUH_3hqoJ0J36A13gsHxT65l-xGXHxish3r5G0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Group2\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5001/api/groups",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "groups"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get comments",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJzdGVmYW4iLCJpYXQiOjE3NDAzMTMwNTMsImV4cCI6MTc0MDMxNjY1M30.Tax7fGkM5M-PgsOnTELyJ-621XmEUg7v2azQQ1ZvSM0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5001/api/groups",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["api", "groups"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "group_members",
       "item": [
         {

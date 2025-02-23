@@ -12,6 +12,7 @@ const groupRoutes = require("../routes/groups/group");
 const taskRoutes = require("../routes/tasks/task");
 const taskHistoryRoutes = require("../routes/task_history/task_history");
 const groupMemberRoutes = require("../routes/group_members/group_member");
+const commentRoutes = require("../routes/comments/comment");
 
 const app = express();
 app.use(express.json());
@@ -30,6 +31,7 @@ app.use("/api/groups", authMiddleware, groupRoutes);
 app.use("/api/group-members", authMiddleware, groupMemberRoutes);
 app.use("/api/tasks", authMiddleware, taskRoutes);
 app.use("/api/task-history", authMiddleware, taskHistoryRoutes);
+app.use("/api/comments", authMiddleware, commentRoutes);
 
 // Health Check
 app.get("/health", (req, res) => {
