@@ -21,7 +21,7 @@ class UserRepository {
   }
 
   async delete(id) {
-    return User.query().deleteById(id);
+    return User.query().deleteById(id).returning("*");
   }
 }
 

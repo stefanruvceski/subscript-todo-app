@@ -22,7 +22,7 @@ class TaskHistoryRepository {
   }
 
   async delete(id) {
-    return TaskHistory.query().deleteById(id);
+    return TaskHistory.query().deleteById(id).returning("*");
   }
 }
 

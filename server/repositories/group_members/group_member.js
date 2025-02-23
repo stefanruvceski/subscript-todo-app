@@ -1,16 +1,8 @@
 const GroupMember = require("../../models/group_members/group_member");
 
 class GroupMemberRepository {
-  async create(memberData) {
-    return GroupMember.query().insert(memberData).returning("*");
-  }
-
-  async findAll() {
-    return GroupMember.query();
-  }
-
-  async findById(id) {
-    return GroupMember.query().findById(id);
+  async create(groupMemberData) {
+    return GroupMember.query().insert(groupMemberData).returning("*");
   }
 
   async findByGroupId(groupId) {
@@ -21,12 +13,19 @@ class GroupMemberRepository {
     return GroupMember.query().where("user_id", userId);
   }
 
-  async update(id, memberData) {
-    return GroupMember.query().patchAndFetchById(id, memberData);
+  async findByGroupAndUser(groupId, userId) {
+    return GroupMember.query()
+      .where("group_id", groupId)
+      .andWhere("user_id", userId)
+      .first();
   }
 
-  async delete(id) {
-    return GroupMember.query().deleteById(id);
+  async delete(groupId, userId) {
+    return GroupMember.query()
+      .delete()
+      .where("group_id", groupId)
+      .andWhere("user_id", userId)
+      .returning("*");
   }
 }
 
