@@ -1,0 +1,54 @@
+{
+	"info": {
+		"_postman_id": "6e6326b6-99f3-4de0-a643-78dabe320876",
+		"name": "subsript-interview",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4600191",
+		"_collection_link": "https://dark-desert-856836.postman.co/workspace/New-Team-Workspace~d20bf703-e297-4153-ad47-9dde6ce98972/collection/4600191-6e6326b6-99f3-4de0-a643-78dabe320876?action=share&source=collection_link&creator=4600191"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"stefan\",\n    \"email\":\"stefan@stefan.com\",\n    \"password\":\"123123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/api/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

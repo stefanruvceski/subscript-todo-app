@@ -25,10 +25,12 @@ class User extends Model {
   }
 
   static get relationMappings() {
+    const Task = require("../tasks/task");
+    const Group = require("../groups/group");
     return {
       ownedGroups: {
         relation: Model.HasManyRelation,
-        modelClass: require("../groups/group"),
+        modelClass: Group,
         join: {
           from: "users.id",
           to: "groups.creator_id",
@@ -36,7 +38,7 @@ class User extends Model {
       },
       memberships: {
         relation: Model.ManyToManyRelation,
-        modelClass: require("../groups/group"),
+        modelClass: Group,
         join: {
           from: "users.id",
           through: {
@@ -48,7 +50,7 @@ class User extends Model {
       },
       createdTasks: {
         relation: Model.HasManyRelation,
-        modelClass: require("./task"),
+        modelClass: Task,
         join: {
           from: "users.id",
           to: "tasks.creator_id",
@@ -56,7 +58,7 @@ class User extends Model {
       },
       assignedTasks: {
         relation: Model.HasManyRelation,
-        modelClass: require("./task"),
+        modelClass: Task,
         join: {
           from: "users.id",
           to: "tasks.assignee_id",
@@ -64,7 +66,7 @@ class User extends Model {
       },
       updatedTasks: {
         relation: Model.HasManyRelation,
-        modelClass: require("./task"),
+        modelClass: Task,
         join: {
           from: "users.id",
           to: "tasks.last_updated_by",

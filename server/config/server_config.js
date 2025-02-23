@@ -5,6 +5,8 @@ const { Model } = require("objection");
 const knex = require("./db");
 Model.knex(knex);
 
+const authMiddleware = require("../middlewares/auth");
+const authRoutes = require("../routes/auth/auth");
 const userRoutes = require("../routes/users/user");
 const groupRoutes = require("../routes/groups/group");
 const taskRoutes = require("../routes/tasks/task");
@@ -21,10 +23,17 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use("/users", userRoutes);
-app.use("/groups", groupRoutes);
-app.use("/tasks", taskRoutes);
-app.use("/task-history", taskHistoryRoutes);
-app.use("/group-members", groupMemberRoutes);
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/users", authMiddleware, userRoutes);
+app.use("/api/groups", authMiddleware, groupRoutes);
+app.use("/api/group-members", authMiddleware, groupMemberRoutes);
+app.use("/api/tasks", authMiddleware, taskRoutes);
+app.use("/api/task-history", authMiddleware, taskHistoryRoutes);
+
+// Health Check
+app.get("/health", (req, res) => {
+  res.send("Server is running");
+});
 
 module.exports = app;
