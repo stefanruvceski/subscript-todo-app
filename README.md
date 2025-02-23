@@ -1,88 +1,139 @@
-> [!WARNING]
-> I implemented this for an interview once ages ago, but now it's unmaintained.
+# Todo Backend Express Knex
 
-# todo-backend-express-knex
+> [!NOTE]  
+> This project is inspired by the [Todo-Backend](http://todobackend.com/) specification but has been extended with additional features and modernized for group usage. It is actively maintained and developed as part of an interview/test project.
 
-This is an implementation of [Todo-Backend](http://todobackend.com/) using Node and Express for the server, Knex for database migrations and query building, and some ES6+ features such as async/await. By default, this project configures Knex to save to PostgreSQL.
+This is a backend API implementation for a group "to-do" application using Node.js, Express for the server, Knex for database migrations and queries, and Objection.js as an ORM. The default database is PostgreSQL. The project leverages ES6+ features like `async/await` and follows a clean architecture for modularity and scalability.
 
-A [production instance](https://todo-backend-express-knex.herokuapp.com/) is running on Heroku.
+## Features
 
-Bonus features include a simple frontend boostrapped with create-react-app and the todo-backend specification tests transcribed for Jest--a quick full-stack starter pack.
+- **Users**: Registration, login, and CRUD operations.
+- **Groups**: Group creation and member management.
+- **Tasks**: Task creation with privacy (owner-only) or group assignment.
+- **Task History**: Automatic tracking of task changes.
+- **Task Comments**: Support for nested comments (sub-comments) with access restricted to group members or task owners for private tasks.
+- **Authentication**: JWT-based authentication for protected routes.
+- **Validation**: Joi validation for input data.
+- **Optimization**: Indexes on key columns for faster queries.
+
+## Prerequisites
+
+- **Node.js**: v16+ (v18 recommended for the latest Yarn features).
+- **PostgreSQL**: v12+ installed locally or hosted (e.g., Supabase).
+- **Yarn**: v1.22+ for package management.
 
 ## Installation
 
-1. Clone this repository.
+### 1. Clone the Repository
 
-    `git clone git@github.com:tonycheang/todo-backend-express-knex.git`
+```bash
+git clone git@github.com:tonycheang/todo-backend-express-knex.git
+cd todo-backend-express-knex/server
+```
 
-2. Install dependencies.
+### 2. Install Dependencies
 
-    `yarn install`
+```bash
+yarn install
+```
 
-3. Create a postgres database for the project.
+### 3. Create a PostgreSQL Database
 
-    ```Bash
-    % psql postgres -U your_username_here
-    postgres=> CREATE DATABASE name_of_db;
-    postgres=> GRANT ALL PRIVILEGES ON DATABASE name_of_db TO your_username_here;
-    postgres=> \q
-    ```
+#### 1. Connect to the PostgreSQL server
 
-    > You could change the default database, but Knex's .returning() method will only work for PostgreSQL, MSSQL, and Oracle databases. Modifications will be needed for other databases to meet the todo-backend spec.
+```bash
+psql -U postgres
+```
 
-4. Add Postgres credentials into server/.env to allow Knex to connect to the database.
-5. Install Knex globally.
+#### 2. Create the database and grant privileges
 
-    `npm install knex -g`
+```bash
+CREATE DATABASE todo_app;
+GRANT ALL PRIVILEGES ON DATABASE todo_app TO postgres;
+\q
+```
 
-6. Set up the database using Knex migrations.
+Replace postgres with your PostgreSQL username if different.
 
-    `cd server && knex migrate:latest`
+### 4 Create and fill out .env
 
-7. Start the server on [http://localhost:5000](http://localhost:5000).
+```bash
+PGUSER=
+PGHOST=
+PGPASSWORD=
+PGDATABASE=
+PGPORT=5432
+PORT=5001
+JWT_SECRET=
+```
 
-    `yarn server`
+### 5. Install Knex Globally
 
-8. Test it against the spec at [Todo-Backend Specs](http://todobackend.com/specs/index.html?http://localhost:5000/)
+```bash
+npm install -g knex
+```
 
-## Bonus Features
+### 6. Apply Migrations
 
-- Run tests locally using either.
+```bash
+npx knex migrate:latest --knexfile config/knexfile.js
+```
 
-    `yarn test`
+### 7. Start the Server
 
-    `yarn test:watch`
+Launch the server at http://localhost:5001:
 
-    >The second command requires watchman  
-    >`brew install watchman`
+```bash
+yarn server
+```
 
-- Install create-react-app frontend starting at root directory:
+## Project Structure
 
-    `cd client && yarn install`
+```bash
+server/
+├── src/
+│   ├── config/          # Database configuration (db.js, knexfile.js)
+│   │   ├── migrations/  # Knex migrations for tables and triggers
+│   │   ├── triggers/    # SQL triggers
+│   │   ├── openapi.yaml # OpenAPI specification
+│   ├── controllers/     # HTTP controllers
+│   ├── middleware/      # Middleware (authentication, validation)
+│   ├── models/          # Objection.js models
+│   ├── repositories/    # CRUD operations for database access
+│   ├── routes/          # Express routes
+│   ├── services/        # Business logic
+│   └── utils/           # Helper functions
+├── .env                 # Environment variables
+└── server.js            # Main entry point
+```
 
-- Run backend and frontend simultaneously from root directory.
+## Development and Testing
 
-    `yarn dev`
+### Creating a New Migration
 
-    > Note: The proxied connection will only work locally.
-    > You'll need the server to serve the frontend build if
-    > you want to host the entire project somewhere.
+```bash
+npx knex migrate:make migration_name --knexfile config/knexfile.js
+```
 
+### Rolling Back Migrations
 
+```bash
+npx knex migrate:rollback --knexfile config/knexfile.js
+```
 
+### Running Tests
 
+```bash
+yarn test
+```
 
+## Documentation
 
-## Thinking
+The API is documented in OpenAPI 3.0 format in openapi.yaml. Generate HTML documentation:
 
-- Tasks -> creator, desc, status,  title, group_id, assign_id, last_update_by,
-- Users -> register/login (jwt) -> create groups and Tasks -> adding users to groups
-- Groups -> name created
-- group-members -> group_id user_id
-- task-history -> old_content, new_content, changed_by, 
+```bash
+npm install -g redoc-cli
+cd server && npx @redocly/cli build-docs config/openapi.yaml -o docs/docsAPI.html
+```
 
-- comments -> content, user_id,task_id, parent_comment_id
-
-
-
-
+Open docs/index.html in a browser for an interactive view.

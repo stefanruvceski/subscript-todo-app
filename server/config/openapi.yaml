@@ -1,0 +1,837 @@
+openapi: 3.0.0
+info:
+  title: Todo Backend API
+  description: API for a group "to-do" application with users, groups, and tasks
+  version: 1.0.0
+
+servers:
+  - url: https://your-project.vercel.app/api
+    description: Production server
+
+tags:
+  - name: Users
+    description: Operations with users
+  - name: Groups
+    description: Operations with groups
+  - name: GroupMembers
+    description: Operations with group members
+  - name: Tasks
+    description: Operations with tasks
+  - name: TaskHistory
+    description: Operations with task history
+  - name: TaskComments
+    description: Operations with task comments
+  - name: Auth
+    description: User authentication
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: "testuser"
+        email:
+          type: string
+          format: email
+          example: "test@example.com"
+        password:
+          type: string
+          example: "hashedpass"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-02-21T12:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-02-21T12:00:00Z"
+
+    Group:
+      type: object
+      required:
+        - name
+        - creator_id
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Test Group"
+        creator_id:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    GroupMember:
+      type: object
+      required:
+        - group_id
+        - user_id
+      properties:
+        group_id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        joined_at:
+          type: string
+          format: date-time
+
+    Task:
+      type: object
+      required:
+        - title
+        - creator_id
+        - last_updated_by
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Test Task"
+        description:
+          type: string
+          example: "Task description"
+        status:
+          type: integer
+          enum: [0, 1, 2]
+          example: 0
+          description: "0 = To Do, 1 = In Progress, 2 = Done"
+        creator_id:
+          type: integer
+          example: 1
+        assignee_id:
+          type: integer
+          example: 2
+          nullable: true
+        group_id:
+          type: integer
+          example: 1
+          nullable: true
+        last_updated_by:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    TaskHistory:
+      type: object
+      required:
+        - task_id
+        - changed_by
+      properties:
+        id:
+          type: integer
+          example: 1
+        task_id:
+          type: integer
+          example: 1
+        changed_by:
+          type: integer
+          example: 1
+        changed_at:
+          type: string
+          format: date-time
+        old_values:
+          type: object
+          additionalProperties: true
+          example: { "status": 0 }
+        new_values:
+          type: object
+          additionalProperties: true
+          example: { "status": 1 }
+
+    TaskComment:
+      type: object
+      required:
+        - task_id
+        - user_id
+        - content
+      properties:
+        id:
+          type: integer
+          example: 1
+        task_id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        parent_comment_id:
+          type: integer
+          nullable: true
+          example: null
+          description: "ID of the parent comment for nested comments; NULL for top-level comments"
+        content:
+          type: string
+          example: "This is a test comment"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-02-21T12:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-02-21T12:00:00Z"
+        replies:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskComment"
+          description: "List of nested sub-comments"
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Error message"
+
+paths:
+  # Users
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get a user by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - Users
+      summary: Update a user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - Users
+      summary: Delete a user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # Groups
+  /groups:
+    post:
+      tags:
+        - Groups
+      summary: Create a new group
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Group"
+      responses:
+        "201":
+          description: Group created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      tags:
+        - Groups
+      summary: Get all groups
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Group"
+
+  /groups/{id}:
+    get:
+      tags:
+        - Groups
+      summary: Get a group by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Group data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+        "404":
+          description: Group not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - Groups
+      summary: Update a group
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Group"
+      responses:
+        "200":
+          description: Updated group
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - Groups
+      summary: Delete a group
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted group
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+        "404":
+          description: Group not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # Group Members
+  /group-members:
+    post:
+      tags:
+        - GroupMembers
+      summary: Add a member to a group
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GroupMember"
+      responses:
+        "201":
+          description: Member added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroupMember"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /group-members/{groupId}/members:
+    get:
+      tags:
+        - GroupMembers
+      summary: Get members of a group
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of group members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GroupMember"
+        "404":
+          description: Group or members not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /group-members/{groupId}/members/{userId}:
+    delete:
+      tags:
+        - GroupMembers
+      summary: Remove a member from a group
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: groupId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Member removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroupMember"
+        "404":
+          description: Member not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # Tasks
+  /tasks:
+    post:
+      tags:
+        - Tasks
+      summary: Create a new task
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+      responses:
+        "201":
+          description: Task created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      tags:
+        - Tasks
+      summary: Get all tasks
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+
+  /tasks/{id}:
+    get:
+      tags:
+        - Tasks
+      summary: Get a task by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Task data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - Tasks
+      summary: Update a task
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+      responses:
+        "200":
+          description: Updated task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - Tasks
+      summary: Delete a task
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # Task History
+  /task-history/{taskId}:
+    get:
+      tags:
+        - TaskHistory
+      summary: Get task history by task ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: taskId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Task history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TaskHistory"
+        "404":
+          description: Task history not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # Task Comments
+  /task-comments:
+    post:
+      tags:
+        - TaskComments
+      summary: Create a new comment on a task
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - task_id
+                - content
+              properties:
+                task_id:
+                  type: integer
+                  example: 1
+                content:
+                  type: string
+                  example: "This is a test comment"
+                parent_comment_id:
+                  type: integer
+                  nullable: true
+                  example: null
+                  description: "ID of the parent comment for nested comments; null for top-level comments"
+      responses:
+        "201":
+          description: Comment created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskComment"
+        "400":
+          description: Bad request (e.g., unauthorized user or invalid task)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /task-comments/{taskId}:
+    get:
+      tags:
+        - TaskComments
+      summary: Get all comments for a task by task ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: taskId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of comments with nested replies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TaskComment"
+        "400":
+          description: Bad request (e.g., unauthorized user or invalid task)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # Authentication
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: User registered, returns JWT token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIs..."
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "test@example.com"
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        "200":
+          description: Successful login, returns JWT token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIs..."
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
