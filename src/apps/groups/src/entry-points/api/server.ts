@@ -9,10 +9,10 @@ import {
   authVerifierMiddleware,
   addRequestId,
 } from "@monorepo/common-middlewares";
-import defineRoutes from "./routes";
-
+import defineGroupRoutes from "./group.routes";
+import defineGroupMembersRoutes from "./group-members.routes";
 let connection: Server;
-const config = getConfig("tasks");
+const config = getConfig("groups");
 // ️️️✅ Best Practice: API exposes a start/stop function to allow testing control WHEN this should happen
 async function startWebServer(): Promise<AddressInfo> {
   // ️️️✅ Best Practice: Declare a strict configuration schema and fail fast if the configuration is invalid
@@ -24,7 +24,8 @@ async function startWebServer(): Promise<AddressInfo> {
   );
   const expressApp = express();
   defineCommonMiddlewares(expressApp);
-  defineRoutes(expressApp);
+  defineGroupRoutes(expressApp);
+  defineGroupMembersRoutes(expressApp);
   defineErrorHandlingMiddleware(expressApp);
   const APIAddress = await openConnection(expressApp);
   return APIAddress;

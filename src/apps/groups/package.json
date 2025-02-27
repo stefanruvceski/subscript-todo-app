@@ -1,5 +1,5 @@
 {
-  "name": "@monorepo/users",
+  "name": "@monorepo/groups",
   "version": "1.0.0",
   "scripts": {
     "build": "tsc",
@@ -7,12 +7,18 @@
     "dev": "ts-node-dev --respawn src/start.ts",
     "start": "node dist/start.ts"
   },
+  "references": [
+    {
+      "path": "../users"
+    }
+  ],
   "dependencies": {
     "@monorepo/common-middlewares": "workspace:*",
     "@monorepo/config": "workspace:*",
     "@monorepo/database": "workspace:*",
     "@monorepo/error-handling": "workspace:*",
     "@monorepo/logger": "workspace:*",
+    "@monorepo/users": "workspace:*",
     "@monorepo/validation": "workspace:*",
     "@prisma/client": "6.4.1",
     "@sinclair/typebox": "^0.34.28",

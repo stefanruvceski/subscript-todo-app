@@ -32,7 +32,7 @@ export const errorHandler = {
 
   handleError: (errorToHandle: unknown): number => {
     try {
-      logger.info("Handling error1");
+      logger.info("Handling error");
       const appError: AppError = covertUnknownToAppError(errorToHandle);
       logger.error(appError.message, appError);
       metricsExporter.fireMetric("error", { errorName: appError.name }); // fire any custom metric when handling error

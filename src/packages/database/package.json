@@ -7,7 +7,7 @@
     "build": "tsc",
     "clean": "rimraf dist",
     "dev": "tsc -w",
-    "db:migrate": "prisma migrate dev--schema src/prisma/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema src/prisma/schema.prisma",
     "db:push": "prisma db push --schema src/prisma/schema.prisma",
     "prisma:generate": "prisma generate --schema src/prisma/schema.prisma",
     "db:studio": "prisma studio --schema src/prisma/schema.prisma"

@@ -14,4 +14,6 @@ src/dist
 src/packages/database/src/src
 public/dist
 
+*.tsbuildinfo
+
 

@@ -25,6 +25,9 @@ model User {
   is_active Boolean @default(true)
   created_tasks Task[] @relation("TaskCreator")
   assigned_tasks Task[] @relation("TaskAssignee")
+
+  groups    GroupMember[]
+  
 }
 
 model Task {
@@ -41,3 +44,23 @@ model Task {
   creator  User @relation("TaskCreator", fields: [creator_id], references: [id])
   assignee User? @relation("TaskAssignee", fields: [assignee_id], references: [id])
 } 
+
+model Group {
+  @@map("groups")
+  id        Int      @id @default(autoincrement()) 
+  name      String   @map("name") 
+  created_at DateTime @default(now()) 
+  updated_at DateTime @updatedAt
+  deleted_at DateTime?
+
+  members   GroupMember[]
+}
+
+model GroupMember {
+  @@map("group_members")
+  id        Int      @id @default(autoincrement()) 
+  group_id Int
+  user_id Int
+  group Group @relation(fields: [group_id], references: [id])
+  user User @relation(fields: [user_id], references: [id])
+}
