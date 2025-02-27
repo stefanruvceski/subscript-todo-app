@@ -10,7 +10,7 @@ type EnvType = {
 export function loadEnv(serviceName: string): EnvType {
   // Učitaj root .env
   const rootEnv = dotenv.config({
-    path: resolve(process.cwd(), "../../.env"),
+    path: resolve(process.cwd(), "../../../.env"),
   });
   dotenvExpand.expand(rootEnv);
 
@@ -42,7 +42,6 @@ export type Config = {
 
 export function getConfig(serviceName: string): Config {
   const env = loadEnv(serviceName) as EnvType;
-
   return {
     port: parseInt(env[`${serviceName.toUpperCase()}_PORT`] || "3000", 10),
     userName: env.DB_USER_NAME || "",
