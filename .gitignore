@@ -1,26 +1,17 @@
-
-
-# dependencies
-/localhost-ssl
+.DS_Store
 node_modules
+.turbo
+*.log
+.next
+dist
+dist-ssr
+*.local
 .env
-./client/node_modules 
-./client/.pnp
-./client/.pnp.js
+.env.local
+.env*.local
+.cache
+src/dist
+src/packages/database/src/src
+public/dist
 
-# testing
-./client/coverage
 
-# production
-./client/build
-
-# misc
-./client/.DS_Store
-./client/.env.local
-./client/.env.development.local
-./client/.env.test.local
-./client/.env.production.local
-
-./client/npm-debug.log*
-./client/yarn-debug.log*
-./client/yarn-error.log*
