@@ -27,6 +27,7 @@ model User {
   assigned_tasks Task[] @relation("TaskAssignee")
 
   groups    GroupMember[]
+  task_history TaskHistory[]
   
 }
 
@@ -43,6 +44,8 @@ model Task {
   assignee_id  Int?
   creator  User @relation("TaskCreator", fields: [creator_id], references: [id])
   assignee User? @relation("TaskAssignee", fields: [assignee_id], references: [id])
+
+  TaskHistory TaskHistory[]
 } 
 
 model Group {
@@ -63,4 +66,18 @@ model GroupMember {
   user_id Int
   group Group @relation(fields: [group_id], references: [id])
   user User @relation(fields: [user_id], references: [id])
+}
+
+model TaskHistory {
+  @@map("task_history")
+  task_id     Int      @map("task_id") @unique
+  changed_by  Int      @map("changed_by") @unique
+  changed_at  DateTime @default(now()) @map("changed_at")
+  old_values  Json?    @map("old_values")
+  new_values  Json?    @map("new_values")
+  
+  task       Task     @relation(fields: [task_id], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [changed_by], references: [id], onDelete: SetNull)
+
+  @@index([task_id])
 }
