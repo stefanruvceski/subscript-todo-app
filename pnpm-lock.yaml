@@ -73,6 +73,61 @@ importers:
         specifier: ^5.0.0
         version: 5.7.3
 
+  src/apps/users:
+    dependencies:
+      '@monorepo/common-middlewares':
+        specifier: workspace:*
+        version: link:../../packages/common-middlewares
+      '@monorepo/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@monorepo/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@monorepo/error-handling':
+        specifier: workspace:*
+        version: link:../../packages/error-handling
+      '@monorepo/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
+      '@monorepo/validation':
+        specifier: workspace:*
+        version: link:../../packages/validation
+      '@prisma/client':
+        specifier: 6.4.1
+        version: 6.4.1(prisma@6.4.1(typescript@5.7.3))(typescript@5.7.3)
+      '@sinclair/typebox':
+        specifier: ^0.34.28
+        version: 0.34.28
+      express:
+        specifier: ^4.18.0
+        version: 4.21.2
+      helmet:
+        specifier: ^8.0.0
+        version: 8.0.0
+      i:
+        specifier: ^0.3.7
+        version: 0.3.7
+      npm:
+        specifier: ^11.1.0
+        version: 11.1.0
+    devDependencies:
+      '@types/express':
+        specifier: ^4.17.0
+        version: 4.17.21
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.17.19
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@20.17.19)(typescript@5.7.3)
+      ts-node-dev:
+        specifier: ^2.0.0
+        version: 2.0.0(@types/node@20.17.19)(typescript@5.7.3)
+      typescript:
+        specifier: ^5.0.0
+        version: 5.7.3
+
   src/packages/common-middlewares:
     dependencies:
       '@monorepo/global-context':
